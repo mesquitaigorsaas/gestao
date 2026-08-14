@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grão Central — Painel de Gestão</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo-mark">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M4 10 L12 4 L20 10 L20 20 L4 20 Z" stroke="#e3a857" stroke-width="1.4" fill="none"/>
+          <path d="M8 20 L8 13 L16 13 L16 20" stroke="#e3a857" stroke-width="1.4"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">GRÃO CENTRAL</span>
+        <span class="brand-tag">Insumos para pizzarias</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="status-strip">
+        <span class="status-dot"></span>
+        <span class="status-label">Sistema operacional</span>
+        <span class="clock" id="clock">--:--:--</span>
+      </div>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobileNav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="tabs-wrap">
+    <nav class="tabs" id="tabs">
+      <button class="tab tab-link active" data-tab="inicio">Início</button>
+      <button class="tab tab-link" data-tab="produtos">Produtos</button>
+      <button class="tab tab-link" data-tab="estoque">Estoque</button>
+      <button class="tab tab-link" data-tab="pedidos">Pedidos</button>
+      <button class="tab tab-link" data-tab="fornecedores">Fornecedores</button>
+      <button class="tab tab-link" data-tab="transportadoras">Transportadoras</button>
+      <button class="tab tab-link" data-tab="financeiro">Financeiro</button>
+      <button class="tab tab-link" data-tab="agenda">Agenda</button>
+      <button class="tab tab-link" data-tab="funcionarios">Funcionários</button>
+      <button class="tab tab-link" data-tab="relatorios">Relatórios</button>
+    </nav>
+    <div class="flow-line"><span></span><span></span><span></span></div>
+  </div>
+
+  <div class="mobile-nav" id="mobileNav">
+    <nav class="mobile-nav-panel">
+      <div class="mobile-nav-head">
+        <span class="brand-name" style="font-size:15px;">Menu</span>
+        <button class="mobile-nav-close" id="mobileNavClose" aria-label="Fechar menu">✕</button>
+      </div>
+      <button class="mobile-tab tab-link active" data-tab="inicio">Início</button>
+      <button class="mobile-tab tab-link" data-tab="produtos">Produtos</button>
+      <button class="mobile-tab tab-link" data-tab="estoque">Estoque</button>
+      <button class="mobile-tab tab-link" data-tab="pedidos">Pedidos</button>
+      <button class="mobile-tab tab-link" data-tab="fornecedores">Fornecedores</button>
+      <button class="mobile-tab tab-link" data-tab="transportadoras">Transportadoras</button>
+      <button class="mobile-tab tab-link" data-tab="financeiro">Financeiro</button>
+      <button class="mobile-tab tab-link" data-tab="agenda">Agenda</button>
+      <button class="mobile-tab tab-link" data-tab="funcionarios">Funcionários</button>
+      <button class="mobile-tab tab-link" data-tab="relatorios">Relatórios</button>
+    </nav>
+  </div>
+
+  <main class="content">
+
+    <!-- INÍCIO -->
+    <section id="inicio" class="panel active">
+      <div class="panel-head">
+        <div>
+          <h1 class="panel-title">Visão geral</h1>
+          <div class="panel-sub">Quinta-feira, 13 de agosto — resumo das operações de hoje</div>
+        </div>
+        <button class="btn btn-primary">+ Novo pedido</button>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">Itens em estoque crítico</div>
+          <div class="kpi-value">4</div>
+          <div class="kpi-delta down">↑ 2 desde ontem</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Pedidos em aberto</div>
+          <div class="kpi-value">7</div>
+          <div class="kpi-delta">3 em trânsito</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Faturamento do mês</div>
+          <div class="kpi-value">R$ 86,4k</div>
+          <div class="kpi-delta">↑ 12% vs. mês anterior</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Entregas hoje</div>
+          <div class="kpi-value">5</div>
+          <div class="kpi-delta">2 transportadoras</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Alertas de estoque</h3>
+          <div class="alert-row"><span>Farinha de trigo tipo 00 — 25kg</span><span class="badge badge-critico">Crítico</span></div>
+          <div class="alert-row"><span>Mussarela fatiada</span><span class="badge badge-critico">Crítico</span></div>
+          <div class="alert-row"><span>Fermento biológico seco</span><span class="badge badge-baixo">Baixo</span></div>
+          <div class="alert-row"><span>Molho de tomate concentrado</span><span class="badge badge-baixo">Baixo</span></div>
+          <div class="alert-row"><span>Caixas de pizza 35cm</span><span class="badge badge-ok">Ok</span></div>
+        </div>
+        <div class="card">
+          <h3>Atividade recente</h3>
+          <div class="activity-row"><span class="activity-dot"></span><span>Pedido #1042 enviado para Moinho Bragança</span><span class="activity-time">09:12</span></div>
+          <div class="activity-row"><span class="activity-dot"></span><span>Entrega confirmada — Rota Norte</span><span class="activity-time">08:47</span></div>
+          <div class="activity-row"><span class="activity-dot"></span><span>Nota fiscal registrada — Laticínios Vale</span><span class="activity-time">08:20</span></div>
+          <div class="activity-row"><span class="activity-dot"></span><span>Novo funcionário cadastrado</span><span class="activity-time">Ontem</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUTOS -->
+    <section id="produtos" class="panel">
+      <div class="panel-head">
+        <div>
+          <h1 class="panel-title">Produtos</h1>
+          <div class="panel-sub">Catálogo de itens vendidos às pizzarias</div>
+        </div>
+        <button class="btn btn-primary">+ Novo produto</button>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead><tr><th>Produto</th><th>Categoria</th><th>Preço de venda</th><th>Unidade</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Produto" class="item-name">Farinha de trigo tipo 00</td><td data-label="Categoria">Farinhas</td><td data-label="Preço de venda" class="mono">R$ 89,90</td><td data-label="Unidade">Saco 25kg</td><td data-label="Status"><span class="badge badge-ok">Ativo</span></td></tr>
+            <tr><td data-label="Produto" class="item-name">Mussarela fatiada</td><td data-label="Categoria">Laticínios</td><td data-label="Preço de venda" class="mono">R$ 142,00</td><td data-label="Unidade">Caixa 5kg</td><td data-label="Status"><span class="badge badge-ok">Ativo</span></td></tr>
+            <tr><td data-label="Produto" class="item-name">Molho de tomate concentrado</td><td data-label="Categoria">Molhos</td><td data-label="Preço de venda" class="mono">R$ 38,50</td><td data-label="Unidade">Balde 4kg</td><td data-label="Status"><span class="badge badge-ok">Ativo</span></td></tr>
+            <tr><td data-label="Produto" class="item-name">Azeite de oliva extra virgem</td><td data-label="Categoria">Óleos</td><td data-label="Preço de venda" class="mono">R$ 96,00</td><td data-label="Unidade">Lata 5L</td><td data-label="Status"><span class="badge badge-ok">Ativo</span></td></tr>
+            <tr><td data-label="Produto" class="item-name">Fermento biológico seco</td><td data-label="Categoria">Fermentos</td><td data-label="Preço de venda" class="mono">R$ 24,90</td><td data-label="Unidade">Pacote 500g</td><td data-label="Status"><span class="badge badge-ok">Ativo</span></td></tr>
+            <tr><td data-label="Produto" class="item-name">Orégano desidratado</td><td data-label="Categoria">Temperos</td><td data-label="Preço de venda" class="mono">R$ 32,00</td><td data-label="Unidade">Pacote 1kg</td><td data-label="Status"><span class="badge badge-ok">Ativo</span></td></tr>
+            <tr><td data-label="Produto" class="item-name">Caixas de pizza 35cm</td><td data-label="Categoria">Embalagens</td><td data-label="Preço de venda" class="mono">R$ 68,00</td><td data-label="Unidade">Fardo 50un</td><td data-label="Status"><span class="badge badge-ok">Ativo</span></td></tr>
+            <tr><td data-label="Produto" class="item-name">Guardanapos personalizados</td><td data-label="Categoria">Embalagens</td><td data-label="Preço de venda" class="mono">R$ 45,00</td><td data-label="Unidade">Pacote 500un</td><td data-label="Status"><span class="badge badge-neutro">Inativo</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ESTOQUE -->
+    <section id="estoque" class="panel">
+      <div class="panel-head">
+        <div>
+          <h1 class="panel-title">Estoque</h1>
+          <div class="panel-sub">Níveis atuais de insumos e embalagens</div>
+        </div>
+        <button class="btn">Exportar planilha</button>
+      </div>
+      <div class="table-card" style="margin-bottom:18px;">
+        <table>
+          <thead><tr><th>Item</th><th>Quantidade</th><th>Nível</th><th>Mínimo</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Item"><div class="item-name">Farinha de trigo tipo 00</div><div class="item-sub">Saco 25kg</div></td><td data-label="Quantidade" class="mono">18 un</td><td data-label="Nível"><div class="bar-track"><div class="bar-fill" style="width:20%;background:var(--alert);"></div></div></td><td data-label="Mínimo" class="mono">60 un</td><td data-label="Status"><span class="badge badge-critico">Crítico</span></td></tr>
+            <tr><td data-label="Item"><div class="item-name">Mussarela fatiada</div><div class="item-sub">Caixa 5kg</div></td><td data-label="Quantidade" class="mono">9 un</td><td data-label="Nível"><div class="bar-track"><div class="bar-fill" style="width:15%;background:var(--alert);"></div></div></td><td data-label="Mínimo" class="mono">40 un</td><td data-label="Status"><span class="badge badge-critico">Crítico</span></td></tr>
+            <tr><td data-label="Item"><div class="item-name">Molho de tomate concentrado</div><div class="item-sub">Balde 4kg</div></td><td data-label="Quantidade" class="mono">22 un</td><td data-label="Nível"><div class="bar-track"><div class="bar-fill" style="width:45%;background:var(--amber);"></div></div></td><td data-label="Mínimo" class="mono">35 un</td><td data-label="Status"><span class="badge badge-baixo">Baixo</span></td></tr>
+            <tr><td data-label="Item"><div class="item-name">Fermento biológico seco</div><div class="item-sub">Pacote 500g</div></td><td data-label="Quantidade" class="mono">30 un</td><td data-label="Nível"><div class="bar-track"><div class="bar-fill" style="width:50%;background:var(--amber);"></div></div></td><td data-label="Mínimo" class="mono">50 un</td><td data-label="Status"><span class="badge badge-baixo">Baixo</span></td></tr>
+            <tr><td data-label="Item"><div class="item-name">Azeite de oliva extra virgem</div><div class="item-sub">Lata 5L</div></td><td data-label="Quantidade" class="mono">64 un</td><td data-label="Nível"><div class="bar-track"><div class="bar-fill" style="width:82%;background:var(--teal);"></div></div></td><td data-label="Mínimo" class="mono">25 un</td><td data-label="Status"><span class="badge badge-ok">Ok</span></td></tr>
+            <tr><td data-label="Item"><div class="item-name">Caixas de pizza 35cm</div><div class="item-sub">Fardo 50un</div></td><td data-label="Quantidade" class="mono">140 un</td><td data-label="Nível"><div class="bar-track"><div class="bar-fill" style="width:90%;background:var(--teal);"></div></div></td><td data-label="Mínimo" class="mono">40 un</td><td data-label="Status"><span class="badge badge-ok">Ok</span></td></tr>
+            <tr><td data-label="Item"><div class="item-name">Orégano desidratado</div><div class="item-sub">Pacote 1kg</div></td><td data-label="Quantidade" class="mono">37 un</td><td data-label="Nível"><div class="bar-track"><div class="bar-fill" style="width:74%;background:var(--teal);"></div></div></td><td data-label="Mínimo" class="mono">20 un</td><td data-label="Status"><span class="badge badge-ok">Ok</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Últimas movimentações</h3>
+        <div class="activity-row"><span class="activity-dot" style="background:var(--alert);"></span><span>Saída — Mussarela fatiada (12 un)</span><span class="user-chip">Diego Lima</span></div>
+        <div class="activity-row"><span class="activity-dot" style="background:var(--teal);"></span><span>Entrada — Azeite extra virgem (24 un)</span><span class="user-chip">Camila Torres</span></div>
+        <div class="activity-row"><span class="activity-dot" style="background:var(--alert);"></span><span>Saída — Farinha tipo 00 (30 un)</span><span class="user-chip">Camila Torres</span></div>
+        <div class="activity-row"><span class="activity-dot" style="background:var(--teal);"></span><span>Entrada — Caixas de pizza 35cm (200 un)</span><span class="user-chip">Rafael Souza</span></div>
+      </div>
+    </section>
+
+    <!-- PEDIDOS -->
+    <section id="pedidos" class="panel">
+      <div class="panel-head">
+        <div>
+          <h1 class="panel-title">Pedidos</h1>
+          <div class="panel-sub">Reposição de insumos junto aos fornecedores</div>
+        </div>
+        <button class="btn btn-primary">Gerar pedido a partir do estoque baixo</button>
+      </div>
+
+      <div class="card" style="margin-bottom:18px;">
+        <h3>Sugestões automáticas — itens abaixo do mínimo</h3>
+        <div class="alert-row"><span>Farinha de trigo tipo 00 · repor 60 un</span><span class="badge badge-critico">Crítico</span></div>
+        <div class="alert-row"><span>Mussarela fatiada · repor 45 un</span><span class="badge badge-critico">Crítico</span></div>
+        <div class="alert-row"><span>Molho de tomate concentrado · repor 20 un</span><span class="badge badge-baixo">Baixo</span></div>
+        <div class="alert-row"><span>Fermento biológico seco · repor 25 un</span><span class="badge badge-baixo">Baixo</span></div>
+      </div>
+
+      <div class="table-card">
+        <table>
+          <thead><tr><th>Pedido</th><th>Fornecedor</th><th>Itens</th><th>Data</th><th>Status</th><th>Responsável</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Pedido" class="mono">#1042</td><td data-label="Fornecedor">Moinho Bragança</td><td data-label="Itens">Farinha tipo 00 (60 un)</td><td data-label="Data" class="mono">13/08</td><td data-label="Status"><span class="badge badge-baixo">Enviado</span></td><td data-label="Responsável" class="user-chip">Rafael Souza</td></tr>
+            <tr><td data-label="Pedido" class="mono">#1041</td><td data-label="Fornecedor">Laticínios Vale</td><td data-label="Itens">Mussarela fatiada (45 un)</td><td data-label="Data" class="mono">12/08</td><td data-label="Status"><span class="badge badge-neutro">Em trânsito</span></td><td data-label="Responsável" class="user-chip">Camila Torres</td></tr>
+            <tr><td data-label="Pedido" class="mono">#1039</td><td data-label="Fornecedor">Distribuidora Sabor</td><td data-label="Itens">Molho de tomate (20 un)</td><td data-label="Data" class="mono">10/08</td><td data-label="Status"><span class="badge badge-ok">Recebido</span></td><td data-label="Responsável" class="user-chip">Camila Torres</td></tr>
+            <tr><td data-label="Pedido" class="mono">#1037</td><td data-label="Fornecedor">Embalatudo</td><td data-label="Itens">Caixas 35cm (400 un)</td><td data-label="Data" class="mono">08/08</td><td data-label="Status"><span class="badge badge-ok">Recebido</span></td><td data-label="Responsável" class="user-chip">Rafael Souza</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- FORNECEDORES -->
+    <section id="fornecedores" class="panel">
+      <div class="panel-head">
+        <div>
+          <h1 class="panel-title">Fornecedores</h1>
+          <div class="panel-sub">Quem abastece o Grão Central</div>
+        </div>
+        <button class="btn">+ Novo fornecedor</button>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead><tr><th>Fornecedor</th><th>Fornece</th><th>Contato</th><th>Prazo médio</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Fornecedor" class="item-name">Moinho Bragança</td><td data-label="Fornece">Farinhas</td><td data-label="Contato" class="mono">(35) 3421-8890</td><td data-label="Prazo médio">3 dias</td></tr>
+            <tr><td data-label="Fornecedor" class="item-name">Laticínios Vale</td><td data-label="Fornece">Queijos e laticínios</td><td data-label="Contato" class="mono">(35) 3422-1156</td><td data-label="Prazo médio">2 dias</td></tr>
+            <tr><td data-label="Fornecedor" class="item-name">Distribuidora Sabor</td><td data-label="Fornece">Molhos e temperos</td><td data-label="Contato" class="mono">(35) 3420-9012</td><td data-label="Prazo médio">4 dias</td></tr>
+            <tr><td data-label="Fornecedor" class="item-name">Embalatudo</td><td data-label="Fornece">Caixas e embalagens</td><td data-label="Contato" class="mono">(35) 3419-3345</td><td data-label="Prazo médio">5 dias</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TRANSPORTADORAS -->
+    <section id="transportadoras" class="panel">
+      <div class="panel-head">
+        <div>
+          <h1 class="panel-title">Transportadoras</h1>
+          <div class="panel-sub">Parceiros de entrega e rotas ativas</div>
+        </div>
+        <button class="btn">+ Nova transportadora</button>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead><tr><th>Transportadora</th><th>Região atendida</th><th>Prazo médio</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Transportadora" class="item-name">Rota Norte Log.</td><td data-label="Região atendida">Zona Norte / Centro</td><td data-label="Prazo médio">1 dia</td><td data-label="Status"><span class="badge badge-ok">Ativa</span></td></tr>
+            <tr><td data-label="Transportadora" class="item-name">TransSul Express</td><td data-label="Região atendida">Zona Sul</td><td data-label="Prazo médio">1–2 dias</td><td data-label="Status"><span class="badge badge-ok">Ativa</span></td></tr>
+            <tr><td data-label="Transportadora" class="item-name">Veloz Cargas</td><td data-label="Região atendida">Região Metropolitana</td><td data-label="Prazo médio">2 dias</td><td data-label="Status"><span class="badge badge-neutro">Em pausa</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- FINANCEIRO -->
+    <section id="financeiro" class="panel">
+      <div class="panel-head">
+        <div>
+          <h1 class="panel-title">Financeiro</h1>
+          <div class="panel-sub">Contas, entradas e saídas do mês</div>
+        </div>
+        <button class="btn">+ Novo lançamento</button>
+      </div>
+      <div class="kpi-grid kpi-grid-3">
+        <div class="kpi"><div class="kpi-label">Receitas do mês</div><div class="kpi-value">R$ 86,4k</div><div class="kpi-delta">↑ 12%</div></div>
+        <div class="kpi"><div class="kpi-label">Despesas do mês</div><div class="kpi-value">R$ 51,2k</div><div class="kpi-delta down">↑ 4%</div></div>
+        <div class="kpi"><div class="kpi-label">Saldo</div><div class="kpi-value">R$ 35,2k</div><div class="kpi-delta">Positivo</div></div>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead><tr><th>Descrição</th><th>Tipo</th><th>Vencimento</th><th>Valor</th><th>Status</th><th>Responsável</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Descrição">Pedido #1042 — Moinho Bragança</td><td data-label="Tipo">Pagar</td><td data-label="Vencimento" class="mono">18/08</td><td data-label="Valor" class="mono">R$ 4.320,00</td><td data-label="Status"><span class="badge badge-baixo">Pendente</span></td><td data-label="Responsável" class="user-chip">Bianca Reis</td></tr>
+            <tr><td data-label="Descrição">Cliente — Pizzaria do Bairro</td><td data-label="Tipo">Receber</td><td data-label="Vencimento" class="mono">15/08</td><td data-label="Valor" class="mono">R$ 2.180,00</td><td data-label="Status"><span class="badge badge-baixo">Pendente</span></td><td data-label="Responsável" class="user-chip">Bianca Reis</td></tr>
+            <tr><td data-label="Descrição">Aluguel do galpão</td><td data-label="Tipo">Pagar</td><td data-label="Vencimento" class="mono">05/08</td><td data-label="Valor" class="mono">R$ 3.900,00</td><td data-label="Status"><span class="badge badge-ok">Pago</span></td><td data-label="Responsável" class="user-chip">Rafael Souza</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- AGENDA -->
+    <section id="agenda" class="panel">
+      <div class="panel-head">
+        <div>
+          <h1 class="panel-title">Agenda</h1>
+          <div class="panel-sub">Compromissos e entregas da semana</div>
+        </div>
+        <button class="btn">+ Novo evento</button>
+      </div>
+      <div class="card">
+        <div class="activity-row"><span class="activity-dot" style="background:var(--amber);"></span><span>Entrega — Rota Norte (5 clientes)</span><span class="activity-time">Hoje, 14:00</span></div>
+        <div class="activity-row"><span class="activity-dot" style="background:var(--teal);"></span><span>Reunião com Moinho Bragança</span><span class="activity-time">Amanhã, 10:00</span></div>
+        <div class="activity-row"><span class="activity-dot"></span><span>Vencimento — aluguel do galpão</span><span class="activity-time">18/08</span></div>
+        <div class="activity-row"><span class="activity-dot"></span><span>Inventário mensal de estoque</span><span class="activity-time">20/08</span></div>
+      </div>
+    </section>
+
+    <!-- FUNCIONÁRIOS -->
+    <section id="funcionarios" class="panel">
+      <div class="panel-head">
+        <div>
+          <h1 class="panel-title">Funcionários</h1>
+          <div class="panel-sub">Equipe do Grão Central</div>
+        </div>
+        <button class="btn">+ Novo funcionário</button>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead><tr><th>Nome</th><th>Cargo</th><th>Setor</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Nome" class="item-name">Rafael Souza</td><td data-label="Cargo">Sócio-gerente</td><td data-label="Setor">Administrativo</td><td data-label="Status"><span class="badge badge-ok">Ativo</span></td></tr>
+            <tr><td data-label="Nome" class="item-name">Camila Torres</td><td data-label="Cargo">Estoquista</td><td data-label="Setor">Estoque</td><td data-label="Status"><span class="badge badge-ok">Ativo</span></td></tr>
+            <tr><td data-label="Nome" class="item-name">Diego Lima</td><td data-label="Cargo">Motorista</td><td data-label="Setor">Logística</td><td data-label="Status"><span class="badge badge-ok">Ativo</span></td></tr>
+            <tr><td data-label="Nome" class="item-name">Bianca Reis</td><td data-label="Cargo">Financeiro</td><td data-label="Setor">Administrativo</td><td data-label="Status"><span class="badge badge-neutro">Férias</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- RELATÓRIOS -->
+    <section id="relatorios" class="panel">
+      <div class="panel-head">
+        <div>
+          <h1 class="panel-title">Relatórios</h1>
+          <div class="panel-sub">Visualize no sistema ou exporte por período</div>
+        </div>
+      </div>
+
+      <div class="grid-2 grid-3">
+        <div class="card report-card">
+          <h3>Estoque</h3>
+          <p class="panel-sub report-desc">Entradas, saídas e itens críticos</p>
+          <div class="report-actions">
+            <button class="btn btn-view" data-report="estoque">Visualizar no sistema</button>
+            <button class="btn btn-export-pdf" data-report="estoque">Exportar PDF</button>
+          </div>
+        </div>
+        <div class="card report-card">
+          <h3>Vendas</h3>
+          <p class="panel-sub report-desc">Faturamento por cliente e período</p>
+          <div class="report-actions">
+            <button class="btn btn-view" data-report="vendas">Visualizar no sistema</button>
+            <button class="btn btn-export-pdf" data-report="vendas">Exportar PDF</button>
+          </div>
+        </div>
+        <div class="card report-card">
+          <h3>Financeiro</h3>
+          <p class="panel-sub report-desc">Contas a pagar e receber</p>
+          <div class="report-actions">
+            <button class="btn btn-view" data-report="financeiro">Visualizar no sistema</button>
+            <button class="btn btn-export-pdf" data-report="financeiro">Exportar PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="report-viewer" id="reportViewer" hidden>
+        <div class="card">
+          <div class="report-viewer-head">
+            <h3 id="reportViewerTitle">Relatório</h3>
+            <div class="filter-row">
+              <label class="field">De
+                <input type="date" id="filtroDe">
+              </label>
+              <label class="field">Até
+                <input type="date" id="filtroAte">
+              </label>
+              <button class="btn" id="btnAplicarFiltro">Aplicar filtro</button>
+              <button class="btn" id="btnExportarCsv">Exportar CSV</button>
+              <button class="btn btn-primary" id="btnExportarPdf">Exportar PDF</button>
+            </div>
+          </div>
+          <p class="report-count" id="reportCount"></p>
+          <div class="table-card">
+            <table>
+              <thead><tr><th>Data</th><th>Descrição</th><th>Valor</th><th>Responsável</th></tr></thead>
+              <tbody id="reportTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="credit">Grão Central · Painel de gestão — Mesquita SaaS</footer>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
