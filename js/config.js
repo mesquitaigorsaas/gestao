@@ -13,8 +13,8 @@
 // "service_role": essa ignora todas as regras de segurança.
 // ============================================================
 
-export const SUPABASE_URL = 'COLE_AQUI_A_URL_DO_PROJETO';
-export const SUPABASE_ANON_KEY = 'COLE_AQUI_A_CHAVE_ANON';
+export const SUPABASE_URL = 'https://zvrllurfevvcbmmxyyby.supabase.co';
+export const SUPABASE_ANON_KEY = 'sb_publishable_WPl4MBY3LIh5IAe1-79e9w_GVD45R0e';
 
 // Nome que aparece no cabeçalho do painel e nos relatórios.
 export const EMPRESA = {

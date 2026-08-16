@@ -87,7 +87,10 @@ async function carregarPerfil(authUser) {
   }
   if (perfil.status === 'inativo') {
     await sb.auth.signOut();
-    throw new Error('Seu acesso foi desativado. Fale com o administrador.');
+    throw new Error(
+      'Sua conta existe, mas ainda não foi liberada. ' +
+        'Peça ao administrador para ativar seu acesso na aba Funcionários.'
+    );
   }
 
   usuario = { ...perfil, email: authUser.email };
@@ -175,12 +178,12 @@ export function pedirLogin() {
     };
     const limparErro = () => caixaErro.classList.remove('show');
 
-    // Banco vazio? Então ninguém instalou ainda: oferece criar o dono.
+    // Ninguém instalou ainda? Então oferece a criação do dono.
+    // A pergunta vai por RPC porque quem está na tela de login ainda é
+    // anônimo, e o RLS não deixa esse visitante contar a tabela perfis.
     (async () => {
-      const { count, error } = await sb
-        .from('perfis')
-        .select('id', { count: 'exact', head: true });
-      if (!error && count === 0) entrarNoModoCadastro();
+      const { data: instalado, error } = await sb.rpc('sistema_instalado');
+      if (!error && instalado === false) entrarNoModoCadastro();
     })();
 
     function entrarNoModoCadastro() {
@@ -344,7 +347,7 @@ export function montarMenuDoUsuario(container, { aoTrocarSenha, itensExtras = []
  * nenhuma: quem está no painel continua sendo quem era.
  */
 export async function criarFuncionario({ nome, email, senha, cargo, setor }) {
-  const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2.45.4');
+  const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
   const { SUPABASE_URL, SUPABASE_ANON_KEY } = await import('./config.js');
 
   const avulso = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
@@ -358,11 +361,22 @@ export async function criarFuncionario({ nome, email, senha, cargo, setor }) {
   });
   if (error) throw new Error(traduzirErroDeLogin(error));
 
-  // O gatilho do banco cria o perfil, mas o primeiro cadastro do sistema
-  // vira admin por regra. Aqui já existe gente, então o cargo escolhido
-  // é o que vale — garantimos isso com um update.
+  // O gatilho cria o perfil sem cargo escolhido e sem acesso — é o que
+  // protege o sistema de alguém se cadastrar sozinho pela tela de login.
+  // Quem libera é este update, que só passa no RLS porque quem está
+  // logado agora é o administrador.
   if (data.user) {
-    await sb.from('perfis').update({ nome, cargo, setor }).eq('id', data.user.id);
+    const { error: erroPerfil } = await sb
+      .from('perfis')
+      .update({ nome, cargo, setor, status: 'ativo' })
+      .eq('id', data.user.id);
+
+    if (erroPerfil) {
+      throw new Error(
+        'A conta foi criada, mas o cargo não pôde ser aplicado. ' +
+          'Ajuste o cadastro pela própria aba Funcionários.'
+      );
+    }
   }
 
   return data.user;

@@ -3,6 +3,11 @@
    Complementa style.css — mesmas variáveis de cor e mesmo tema.
    ============================================================ */
 
+/* O atributo hidden vem do navegador como display:none, mas qualquer
+   regra nossa de display o vence — .campo{display:flex} escondia nada.
+   Esta linha devolve ao hidden a palavra final. */
+[hidden]{display:none !important;}
+
 /* ---------- Carregando ---------- */
 .spinner{
   display:inline-block; width:13px; height:13px; vertical-align:-2px;

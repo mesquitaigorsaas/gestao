@@ -60,7 +60,12 @@ $$;
 
 
 -- Todo usuário criado no Authentication ganha um perfil automático.
--- O primeiro a se cadastrar vira admin — é o dono do sistema.
+--
+-- O primeiro a se cadastrar vira admin — é o dono do sistema. Do segundo
+-- em diante, o cadastro NÃO define o próprio cargo e nasce sem acesso:
+-- o endereço do painel é público, então qualquer pessoa pode chamar o
+-- cadastro. Quem libera e define o cargo é o administrador, na aba
+-- Funcionários — e é isso que o app faz logo após criar a conta.
 create or replace function public.criar_perfil_no_signup()
 returns trigger
 language plpgsql
@@ -70,21 +75,25 @@ as $$
 declare
   eh_o_primeiro boolean;
   cargo_novo    text;
+  status_novo   text;
 begin
   select not exists (select 1 from public.perfis) into eh_o_primeiro;
 
   if eh_o_primeiro then
-    cargo_novo := 'admin';
+    cargo_novo  := 'admin';
+    status_novo := 'ativo';
   else
-    cargo_novo := coalesce(new.raw_user_meta_data->>'cargo', 'estoque');
+    cargo_novo  := 'estoque';
+    status_novo := 'inativo';
   end if;
 
-  insert into public.perfis (id, nome, cargo, setor)
+  insert into public.perfis (id, nome, cargo, setor, status)
   values (
     new.id,
     coalesce(new.raw_user_meta_data->>'nome', split_part(new.email, '@', 1)),
     cargo_novo,
-    coalesce(new.raw_user_meta_data->>'setor', 'Operação')
+    coalesce(new.raw_user_meta_data->>'setor', 'Operação'),
+    status_novo
   )
   on conflict (id) do nothing;
 
@@ -96,6 +105,24 @@ drop trigger if exists trg_criar_perfil on auth.users;
 create trigger trg_criar_perfil
   after insert on auth.users
   for each row execute function public.criar_perfil_no_signup();
+
+
+-- A tela de login precisa saber se o sistema já tem dono, para decidir
+-- se oferece o "primeiro acesso". Quem ainda não entrou é anon, e o RLS
+-- esconde a tabela perfis dele — uma contagem simples voltaria zero e a
+-- tela ofereceria o primeiro acesso para sempre. Daí esta função, que
+-- responde só sim ou não, sem expor nada de ninguém.
+create or replace function public.sistema_instalado()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (select 1 from public.perfis);
+$$;
+
+grant execute on function public.sistema_instalado() to anon, authenticated;
 
 
 -- ------------------------------------------------------------
