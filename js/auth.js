@@ -266,7 +266,7 @@ function traduzirErroDeLogin(err) {
 // Menu do usuário no topo
 // ------------------------------------------------------------
 
-export function montarMenuDoUsuario(container, { aoTrocarSenha } = {}) {
+export function montarMenuDoUsuario(container, { aoTrocarSenha, itensExtras = [] } = {}) {
   const iniciais = usuario.nome
     .split(' ')
     .filter(Boolean)
@@ -291,8 +291,23 @@ export function montarMenuDoUsuario(container, { aoTrocarSenha } = {}) {
         <span>${esc(usuario.email)}</span>
       </div>
       <button class="usuario-item" type="button" data-senha role="menuitem">Trocar minha senha</button>
+      <div data-extras></div>
       <button class="usuario-item usuario-item-perigo" type="button" data-sair role="menuitem">Sair do sistema</button>
     </div>`;
+
+  const areaExtras = menu.querySelector('[data-extras]');
+  itensExtras.forEach((item) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = `usuario-item ${item.perigoso ? 'usuario-item-perigo' : ''}`;
+    b.setAttribute('role', 'menuitem');
+    b.textContent = item.texto;
+    b.addEventListener('click', () => {
+      menu.querySelector('.usuario-lista').classList.remove('open');
+      item.aoClicar();
+    });
+    areaExtras.append(b);
+  });
 
   const btn = menu.querySelector('.usuario-btn');
   const lista = menu.querySelector('.usuario-lista');
@@ -318,6 +333,39 @@ export function montarMenuDoUsuario(container, { aoTrocarSenha } = {}) {
   menu.querySelector('[data-sair]').addEventListener('click', sair);
 
   container.appendChild(menu);
+}
+
+/**
+ * Cria o acesso de um novo funcionário.
+ *
+ * O signUp normal trocaria a sessão do navegador pela do usuário
+ * recém-criado — o administrador seria deslogado no meio do cadastro.
+ * Por isso a conta nasce em um cliente separado, que não guarda sessão
+ * nenhuma: quem está no painel continua sendo quem era.
+ */
+export async function criarFuncionario({ nome, email, senha, cargo, setor }) {
+  const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2.45.4');
+  const { SUPABASE_URL, SUPABASE_ANON_KEY } = await import('./config.js');
+
+  const avulso = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+
+  const { data, error } = await avulso.auth.signUp({
+    email,
+    password: senha,
+    options: { data: { nome, cargo, setor } },
+  });
+  if (error) throw new Error(traduzirErroDeLogin(error));
+
+  // O gatilho do banco cria o perfil, mas o primeiro cadastro do sistema
+  // vira admin por regra. Aqui já existe gente, então o cargo escolhido
+  // é o que vale — garantimos isso com um update.
+  if (data.user) {
+    await sb.from('perfis').update({ nome, cargo, setor }).eq('id', data.user.id);
+  }
+
+  return data.user;
 }
 
 export async function trocarSenha(novaSenha) {
