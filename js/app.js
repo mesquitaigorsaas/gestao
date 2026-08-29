@@ -3,11 +3,12 @@
 // ============================================================
 
 import { configurado } from './supabase.js';
-import { EMPRESA } from './config.js';
+import { EMPRESA, DEMO } from './config.js';
 import * as ui from './ui.js';
 import {
   recuperarSessao,
   pedirLogin,
+  entrarComoDemonstracao,
   usuarioAtual,
   podeVer,
   aplicarPermissoesNaNavegacao,
@@ -124,6 +125,9 @@ function fecharMenuMobile() {
 // ------------------------------------------------------------
 
 function itensDeDemonstracao() {
+  // Na demonstração estes itens não existem: eles gravam no banco, e
+  // aqui não há banco. Voltam sozinhos quando DEMO for desligado.
+  if (DEMO) return [];
   if (usuarioAtual()?.cargo !== 'admin') return [];
 
   return [
@@ -198,7 +202,9 @@ function avisarConfiguracaoPendente() {
 async function iniciar() {
   document.title = `${EMPRESA.nome} — Painel de Gestão`;
 
-  if (!configurado) {
+  // Numa demonstração não há banco para configurar nem login a fazer:
+  // entra direto, com os dados de exemplo do js/store.js.
+  if (!DEMO && !configurado) {
     avisarConfiguracaoPendente();
     return;
   }
@@ -206,14 +212,19 @@ async function iniciar() {
   iniciarRelogio();
   ligarNavegacao();
 
-  try {
-    let usuario = await recuperarSessao();
+  if (DEMO) {
+    entrarComoDemonstracao();
     document.getElementById('boot')?.remove();
-    if (!usuario) usuario = await pedirLogin();
-  } catch (e) {
-    document.getElementById('boot')?.remove();
-    ui.erro(e);
-    await pedirLogin();
+  } else {
+    try {
+      let usuario = await recuperarSessao();
+      document.getElementById('boot')?.remove();
+      if (!usuario) usuario = await pedirLogin();
+    } catch (e) {
+      document.getElementById('boot')?.remove();
+      ui.erro(e);
+      await pedirLogin();
+    }
   }
 
   aplicarPermissoesNaNavegacao();

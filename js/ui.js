@@ -157,8 +157,124 @@ document.addEventListener('keydown', (e) => {
 //   { nome, rotulo, tipo, obrigatorio, opcoes, dica, min, passo, largo }
 //   tipo: texto | numero | moeda | data | datahora | select | area | senha | switch
 
-function montarCampo(campo, valor) {
+/**
+ * Encolhe a foto antes de enviar. Celular tira imagem de 4000px e 5 MB;
+ * na tela ela aparece com menos de 100px. Reduzir aqui deixa o cadastro
+ * rápido em internet ruim e o depósito de imagens enxuto.
+ */
+export function encolherImagem(arquivo, ladoMaximo = 900, qualidade = 0.82) {
+  return new Promise((resolve, reject) => {
+    const leitor = new FileReader();
+    leitor.onerror = () => reject(new Error('Não foi possível ler a imagem.'));
+    leitor.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error('Esse arquivo não é uma imagem válida.'));
+      img.onload = () => {
+        const escala = Math.min(1, ladoMaximo / Math.max(img.width, img.height));
+
+        // Já é pequena: manda o arquivo original e não perde qualidade à toa.
+        if (escala === 1 && arquivo.size < 400_000) return resolve(arquivo);
+
+        const tela = document.createElement('canvas');
+        tela.width = Math.round(img.width * escala);
+        tela.height = Math.round(img.height * escala);
+        tela.getContext('2d').drawImage(img, 0, 0, tela.width, tela.height);
+
+        tela.toBlob(
+          (blob) => {
+            if (!blob) return resolve(arquivo);
+            resolve(new File([blob], arquivo.name.replace(/\.\w+$/, '') + '.jpg', {
+              type: 'image/jpeg',
+            }));
+          },
+          'image/jpeg',
+          qualidade
+        );
+      };
+      img.src = leitor.result;
+    };
+    leitor.readAsDataURL(arquivo);
+  });
+}
+
+function montarCampoImagem(campo, valor, estado) {
+  const { nome, rotulo, dica } = campo;
+
+  // O valor começa como está no banco: a url atual, ou nada.
+  estado[nome] = { acao: 'manter', url: valor || null, arquivo: null };
+
+  const wrap = document.createElement('div');
+  wrap.className = 'campo campo-largo campo-imagem';
+  wrap.innerHTML = `
+    <span class="campo-rotulo">${esc(rotulo || nome)}</span>
+    <div class="imagem-caixa">
+      <div class="imagem-previa" data-previa>
+        ${valor ? `<img src="${esc(valor)}" alt="">` : '<span class="imagem-vazia">Sem foto</span>'}
+      </div>
+      <div class="imagem-acoes">
+        <button type="button" class="btn btn-pequeno" data-escolher>
+          ${valor ? 'Trocar foto' : 'Escolher foto'}
+        </button>
+        <button type="button" class="btn btn-pequeno btn-sutil" data-remover ${valor ? '' : 'hidden'}>
+          Remover
+        </button>
+        ${dica ? `<span class="campo-dica">${esc(dica)}</span>` : ''}
+      </div>
+    </div>
+    <input type="file" accept="image/*" hidden data-arquivo>`;
+
+  const entrada = wrap.querySelector('[data-arquivo]');
+  const previa = wrap.querySelector('[data-previa]');
+  const btnEscolher = wrap.querySelector('[data-escolher]');
+  const btnRemover = wrap.querySelector('[data-remover]');
+
+  btnEscolher.addEventListener('click', () => entrada.click());
+
+  entrada.addEventListener('change', async () => {
+    const arquivo = entrada.files?.[0];
+    if (!arquivo) return;
+
+    if (!arquivo.type.startsWith('image/')) {
+      aviso('Escolha um arquivo de imagem.', 'erro');
+      entrada.value = '';
+      return;
+    }
+
+    previa.innerHTML = '<span class="spinner"></span>';
+    try {
+      const menor = await encolherImagem(arquivo);
+      estado[nome] = { acao: 'trocar', url: valor || null, arquivo: menor };
+
+      const previsualizacao = URL.createObjectURL(menor);
+      previa.innerHTML = `<img src="${previsualizacao}" alt="">`;
+      previa.querySelector('img').addEventListener('load', () =>
+        URL.revokeObjectURL(previsualizacao)
+      );
+
+      btnEscolher.textContent = 'Trocar foto';
+      btnRemover.hidden = false;
+    } catch (e) {
+      erro(e);
+      previa.innerHTML = '<span class="imagem-vazia">Sem foto</span>';
+    } finally {
+      entrada.value = '';
+    }
+  });
+
+  btnRemover.addEventListener('click', () => {
+    estado[nome] = { acao: 'remover', url: valor || null, arquivo: null };
+    previa.innerHTML = '<span class="imagem-vazia">Sem foto</span>';
+    btnEscolher.textContent = 'Escolher foto';
+    btnRemover.hidden = true;
+  });
+
+  return wrap;
+}
+
+function montarCampo(campo, valor, estado) {
   const { nome, rotulo, tipo = 'texto', obrigatorio, opcoes = [], dica, min, passo, largo } = campo;
+
+  if (tipo === 'imagem') return montarCampoImagem(campo, valor, estado);
   const id = `campo-${nome}`;
   const req = obrigatorio ? 'required' : '';
   const wrap = document.createElement('label');
@@ -216,7 +332,11 @@ export function formulario({ titulo, subtitulo, campos, valores = {}, textoSalva
     const form = document.createElement('form');
     form.className = 'form-grid';
     form.noValidate = false;
-    campos.forEach((c) => form.append(montarCampo(c, valores[c.nome])));
+
+    // Campos de imagem não cabem em form.elements: guardam arquivo e
+    // intenção (manter, trocar, remover) aqui do lado.
+    const imagens = {};
+    campos.forEach((c) => form.append(montarCampo(c, valores[c.nome], imagens)));
 
     const rodape = document.createElement('div');
     rodape.className = 'modal-acoes';
@@ -240,6 +360,10 @@ export function formulario({ titulo, subtitulo, campos, valores = {}, textoSalva
 
       const dados = {};
       for (const c of campos) {
+        if (c.tipo === 'imagem') {
+          dados[c.nome] = imagens[c.nome];
+          continue;
+        }
         const el = form.elements[c.nome];
         if (!el) continue;
         if (c.tipo === 'switch') dados[c.nome] = el.checked;

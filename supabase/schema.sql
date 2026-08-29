@@ -157,6 +157,7 @@ create table if not exists public.produtos (
   preco_venda     numeric(12,2) not null default 0,
   quantidade      numeric(12,2) not null default 0,  -- saldo atual, mantido por trigger
   estoque_minimo  numeric(12,2) not null default 0,
+  imagem_url      text,                              -- foto no Storage; aqui só o link
   ativo           boolean not null default true,
   criado_em       timestamptz not null default now()
 );
@@ -447,7 +448,49 @@ create policy admin_gerencia_perfis on public.perfis
 
 
 -- ------------------------------------------------------------
--- 7. Visões de apoio
+-- 7. Fotos dos produtos
+-- ------------------------------------------------------------
+-- As imagens ficam no Storage; a tabela produtos guarda só o link.
+-- O depósito é público para a foto carregar na tela sem exigir login,
+-- mas enviar e apagar continua restrito aos mesmos cargos que mexem
+-- no cadastro de produtos.
+
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'produtos',
+  'produtos',
+  true,
+  5242880,  -- 5 MB por arquivo
+  array['image/jpeg','image/png','image/webp','image/gif']
+)
+on conflict (id) do update
+  set public             = excluded.public,
+      file_size_limit    = excluded.file_size_limit,
+      allowed_mime_types = excluded.allowed_mime_types;
+
+drop policy if exists ver_imagens_produtos on storage.objects;
+create policy ver_imagens_produtos on storage.objects
+  for select to public
+  using (bucket_id = 'produtos');
+
+drop policy if exists enviar_imagens_produtos on storage.objects;
+create policy enviar_imagens_produtos on storage.objects
+  for insert to authenticated
+  with check (bucket_id = 'produtos' and public.meu_cargo() in ('admin','estoque'));
+
+drop policy if exists trocar_imagens_produtos on storage.objects;
+create policy trocar_imagens_produtos on storage.objects
+  for update to authenticated
+  using (bucket_id = 'produtos' and public.meu_cargo() in ('admin','estoque'));
+
+drop policy if exists apagar_imagens_produtos on storage.objects;
+create policy apagar_imagens_produtos on storage.objects
+  for delete to authenticated
+  using (bucket_id = 'produtos' and public.meu_cargo() in ('admin','estoque'));
+
+
+-- ------------------------------------------------------------
+-- 8. Visões de apoio
 -- ------------------------------------------------------------
 -- security_invoker faz a view respeitar o RLS de quem consulta,
 -- em vez de rodar com os poderes de quem a criou.
@@ -459,6 +502,7 @@ select
   p.nome,
   p.categoria,
   p.unidade,
+  p.imagem_url,
   p.quantidade,
   p.estoque_minimo,
   case

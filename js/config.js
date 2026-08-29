@@ -22,5 +22,16 @@ export const EMPRESA = {
   ramo: 'Insumos para pizzarias',
 };
 
+// ============================================================
+// MODO DEMONSTRAÇÃO
+// ============================================================
+// Com DEMO ligado, o sistema não fala com banco nenhum: entra
+// direto, cheio de dados inventados, e recusa qualquer gravação.
+// É assim que ele é mostrado a um possível comprador.
+//
+// Para instalar em um cliente de verdade, veja as instruções no
+// topo de js/store.js.
+export const DEMO = true;
+
 export const configurado =
   !SUPABASE_URL.startsWith('COLE_AQUI') && !SUPABASE_ANON_KEY.startsWith('COLE_AQUI');

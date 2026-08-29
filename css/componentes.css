@@ -202,6 +202,53 @@
 }
 .campo input:invalid:not(:placeholder-shown){border-color:var(--alert);}
 
+/* ---------- Campo de foto ---------- */
+.imagem-caixa{display:flex; gap:16px; align-items:flex-start;}
+.imagem-previa{
+  width:104px; height:104px; flex:0 0 auto;
+  border:1px dashed var(--line); border-radius:12px;
+  background:var(--bg-elevated); overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+}
+.imagem-previa img{width:100%; height:100%; object-fit:cover; display:block;}
+.imagem-vazia{font-size:11.5px; color:var(--text-faint); text-align:center; padding:0 8px;}
+.imagem-acoes{display:flex; flex-direction:column; gap:8px; align-items:flex-start; padding-top:4px;}
+
+/* Miniatura na listagem de produtos */
+.miniatura{
+  width:38px; height:38px; border-radius:8px; flex:0 0 auto;
+  background:var(--bg-elevated); border:1px solid var(--line-soft);
+  object-fit:cover; display:block;
+}
+.miniatura-vazia{
+  width:38px; height:38px; border-radius:8px; flex:0 0 auto;
+  background:var(--bg-elevated); border:1px dashed var(--line);
+  display:flex; align-items:center; justify-content:center;
+  color:var(--text-faint); font-size:15px;
+}
+.celula-foto{display:flex; align-items:center; gap:12px;}
+
+/* ---------- Botão de descrição por IA ---------- */
+.ia-linha{
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  margin-top:-2px;
+}
+.btn-ia{
+  display:inline-flex; align-items:center; gap:7px;
+  background:linear-gradient(180deg, var(--bg-elevated-2), var(--bg-elevated));
+  border:1px solid var(--line); color:var(--text);
+  font-family:inherit; font-size:12px; font-weight:600;
+  padding:7px 13px; border-radius:8px; cursor:pointer;
+}
+.btn-ia:hover:not(:disabled){border-color:var(--amber); color:var(--amber);}
+.btn-ia:disabled{opacity:.55; cursor:not-allowed;}
+.ia-aviso{font-size:11.5px; color:var(--text-faint);}
+.ia-fontes{
+  margin-top:10px; padding-top:10px; border-top:1px solid var(--line-soft);
+  font-size:11.5px; color:var(--text-faint); line-height:1.7;
+}
+.ia-fontes a{color:var(--text-muted); word-break:break-all;}
+
 /* Interruptor sim/não */
 .switch{display:inline-flex; align-items:center; cursor:pointer; height:38px;}
 .switch input{position:absolute; opacity:0; width:0; height:0;}

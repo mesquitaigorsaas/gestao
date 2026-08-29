@@ -60,6 +60,25 @@ export function podeEditar(area) {
 // ------------------------------------------------------------
 
 /** Recupera a sessão salva. Devolve o usuário, ou null se ninguém está logado. */
+/**
+ * Entra no painel sem login, como um administrador fictício.
+ *
+ * Numa demonstração, a tela de acesso é uma porta trancada na cara
+ * de quem veio ver o sistema: ele fecha antes de descobrir o que o
+ * sistema faz. Aqui a pessoa já cai dentro, com tudo à mostra.
+ */
+export function entrarComoDemonstracao() {
+  usuario = {
+    id: 'u1',
+    nome: 'Igor Mesquita',
+    cargo: 'admin',
+    setor: 'Diretoria',
+    status: 'ativo',
+    email: 'demonstracao@mesquitasaas.com.br',
+  };
+  return usuario;
+}
+
 export async function recuperarSessao() {
   const { data } = await sb.auth.getSession();
   if (!data?.session) {
